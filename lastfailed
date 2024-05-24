@@ -1,4 +1,0 @@
-{
-  "tests/test_main.py": true,
-  "app/tests/test_main.py": true
-}
