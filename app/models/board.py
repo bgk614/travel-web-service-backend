@@ -9,4 +9,5 @@ board = Table(
     Column("title", String(255)),
     Column("contents", String(255)),
     Column("created_by", String(50)),
+    Column("created_at", String[50])
 )
