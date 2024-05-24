@@ -19,7 +19,8 @@ secrets.json 파일 만들기
         "host": "",
         "port": ,
         "dbname": ""
-    }
+    },    
+    "OPENAI_API_KEY": ""
 }
 ```
 실행
