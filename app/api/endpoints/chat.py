@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import os
 import json
 from fastapi import APIRouter, HTTPException
@@ -12,7 +12,9 @@ router = APIRouter()
 
 with open('secrets.json', 'r') as file:
     config = json.load(file)
-    openai.api_key = config['OPENAI_API_KEY']
+    OpenAI.api_key = config['OPENAI_API_KEY']
+    
+client = OpenAI(api_key=OpenAI.api_key)
 
 @router.post("/", response_model=ChatMessage)
 async def create_message(item: ChatMessage):
@@ -30,14 +32,14 @@ async def read_messages():
 @router.post("/query_chatgpt/", response_model=ChatMessage)
 async def query_chatgpt(item: ChatMessage):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": item.text}
             ]
         )
-        response_text = response['choices'][0]['message']['content'].strip()
+        response_text = response.choices[0].message.content
 
         # 응답을 데이터베이스에 저장
         query = chat.insert().values(sender="chatgpt", text=response_text)
@@ -45,4 +47,5 @@ async def query_chatgpt(item: ChatMessage):
 
         return {"sender": "chatgpt", "text": response_text, "created_at": datetime.now(), "id": last_record_id}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500, detail=str(e))
