@@ -26,7 +26,9 @@ users = Table(
     Column('nickname', String(50)),
     Column('password', String(100)),  # 실제로는 비밀번호 해싱 필요
     Column('name', String(100)),
-    Column('phone', String(15)),
-    Column('email', String(100), unique=True, index=True),
-    Column('address', String(255))
+    Column('birthDate', String(10)),
+    Column('phoneNumber', String(15)),
+    #Column('email', String(100), unique=True, index=True),
+    #Column('address', String(255)),
+    Column('created_at', TIMESTAMP, server_default=sa_text("CURRENT_TIMESTAMP"))
 )
