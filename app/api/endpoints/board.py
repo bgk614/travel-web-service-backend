@@ -23,7 +23,7 @@ async def read_boards():
 # 게시글 상세 내용 조회
 @router.get("/{board_id}")
 async def read_board(board_id: int):
-    query = select(board).where(board.c.id == board_id)  # id로 수정
+    query = select(board).where(board.c.id)
     result = await database.fetch_one(query)
     if result is None:
         raise HTTPException(status_code=404, detail="Board not found")
@@ -32,6 +32,6 @@ async def read_board(board_id: int):
 # 게시글 삭제
 @router.delete("/{board_id}")
 async def delete_board(board_id: int):
-    query = board.delete().where(board.c.id == board_id)  # id로 수정
+    query = board.delete().where(board.c.id)
     await database.execute(query)
     return {"message": "Board deleted"}
