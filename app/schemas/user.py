@@ -1,14 +1,16 @@
+from datetime import date
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UserCreate(BaseModel):
+    id: int  
     userid: str
     nickname: str
     password: Optional[str] = None
     name: str
     phone: str
     email: EmailStr
-    address: str
+    birthdate: date  
 
 class UserResponse(BaseModel):
     id: int
@@ -17,7 +19,7 @@ class UserResponse(BaseModel):
     name: str
     phone: str
     email: str
-    address: str
+    birthdate: date  
 
     class Config:
         orm_mode = True

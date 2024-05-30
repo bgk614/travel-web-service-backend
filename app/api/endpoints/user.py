@@ -16,10 +16,18 @@ async def read_user():
 
 @router.put("/")
 async def update_user(user_data: UserCreate):
-    query = select(user).where(user.c.userid == user_data.userid)
+    # 기존 사용자 조회 (id 사용)
+    query = select(user).where(user.c.id == user_data.id)
     db_user = await database.fetch_one(query)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # userid 중복 확인
+    if user_data.userid != db_user.userid:
+        duplicate_query = select(user).where(user.c.userid == user_data.userid)
+        duplicate_user = await database.fetch_one(duplicate_query)
+        if duplicate_user:
+            raise HTTPException(status_code=400, detail="User ID already exists")
 
     update_data = {
         "userid": user_data.userid,
@@ -27,7 +35,7 @@ async def update_user(user_data: UserCreate):
         "name": user_data.name,
         "phone": user_data.phone,
         "email": user_data.email,
-        "address": user_data.address
+        "birthdate": user_data.birthdate
     }
 
     if user_data.password:
