@@ -20,6 +20,11 @@ app.include_router(notice.router, prefix="/notice", tags=["notice"])
 app.include_router(question.router, prefix="/question", tags=["question"])
 app.include_router(answer.router, prefix="/answer", tags=["answer"])
 
+app.include_router(answer.router, prefix="/login", tags=["login"])
+app.include_router(answer.router, prefix="/check-userid", tags=["check-userid"])
+
+
+
 @app.on_event("startup")
 async def startup():
     await database.connect()
