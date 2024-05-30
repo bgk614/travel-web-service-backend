@@ -4,7 +4,7 @@ from app.models.answer import answer
 from app.database import database
 from app.schemas.answer import AnswerCreate, Answer
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 import logging
 
 router = APIRouter()
