@@ -5,7 +5,7 @@ metadata = MetaData()
 users = Table(
     'users', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('userid', Integer, primary_key=True),
+    Column('userid', String(100), primary_key=True),
     Column('nickname', String(50)),
     Column('password', String(100)),
     Column('name', String(100)),

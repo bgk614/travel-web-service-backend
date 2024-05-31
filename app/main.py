@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.endpoints import board, chat, users, notice, question, answer
+from app.api.endpoints import board, chat, users, notice, question, answer, auth
 from app.database import database
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,6 +19,11 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(notice.router, prefix="/notice", tags=["notice"])
 app.include_router(question.router, prefix="/question", tags=["question"])
 app.include_router(answer.router, prefix="/answer", tags=["answer"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+
+@app.get("/api/demo-web")
+async def demo_web():
+    return {"message": ""}
 
 @app.on_event("startup")
 async def startup():
