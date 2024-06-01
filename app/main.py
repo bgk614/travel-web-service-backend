@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.api.endpoints import board, chat, users, place
+from app.api.endpoints import board, chat, user, notice, question, answer, place
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import Base, engine
+from app.database import Base, engine, database
 from app.models import place as place_model
 
 Base.metadata.create_all(bind=engine)
@@ -18,5 +18,23 @@ app.add_middleware(
 
 app.include_router(board.router, prefix="/board", tags=["board"])
 app.include_router(chat.router, prefix="/chat", tags=["chat"])
-app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(place.router, prefix="/place", tags=["place"])
+app.include_router(user.router, prefix="/user", tags=["user"])
+app.include_router(notice.router, prefix="/notice", tags=["notice"])
+app.include_router(question.router, prefix="/question", tags=["question"])
+app.include_router(answer.router, prefix="/answer", tags=["answer"])
+
+app.include_router(answer.router, prefix="/login", tags=["login"])
+app.include_router(answer.router, prefix="/check-userid", tags=["check-userid"])
+
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+    print("Database connected!")
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
+    print("Database disconnected!")
