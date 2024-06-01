@@ -3,7 +3,7 @@ from sqlalchemy import select
 from app.models.board import board
 from app.database import database
 from app.schemas.board import Board
-
+from app.models import place
 router = APIRouter()
 
 # 게시글 생성
