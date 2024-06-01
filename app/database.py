@@ -10,7 +10,7 @@ with open('secrets.json', 'r') as file:
 
 
 db_info = config['DATABASE_URL']
-DATABASE_URL = f"mysql+pymysql://{db_info['user']}:{db_info['password']}@{db_info['host']}:{db_info['port']}/{db_info['dbname']}"
+DATABASE_URL = f"mysql+pymysql://{db_info['root']}:{db_info['0000']}@{db_info['localhost']}:{db_info['3306']}/{db_info['tours']}"
 
 
 database = Database(DATABASE_URL)
