@@ -18,10 +18,10 @@ def read_place(content_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Place not found")
     return place
 
-@router.get("/places/", response_model=List[Place])
-def read_places(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    places = get_all_places(db=db)
-    return places
+# @router.get("/places/", response_model=List[Place])
+# def read_places(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     places = get_all_places(db=db)
+#     return places
 
 @router.get("/places/all", response_model=List[Place])
 def read_all_places(db: Session = Depends(get_db)):
