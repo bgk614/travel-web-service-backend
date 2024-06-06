@@ -1,7 +1,8 @@
 from fastapi import FastAPI
-from app.api.endpoints import board, chat, users, notice, question, answer, auth
+from app.api.endpoints import board, chat, users, notice, question, answer, auth, plans
 from app.database import database
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
@@ -20,6 +21,7 @@ app.include_router(notice.router, prefix="/notice", tags=["notice"])
 app.include_router(question.router, prefix="/question", tags=["question"])
 app.include_router(answer.router, prefix="/answer", tags=["answer"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(plans.router, prefix="/plans", tags=["plans"])
 
 @app.get("/api/demo-web")
 async def demo_web():
@@ -29,6 +31,10 @@ async def demo_web():
 async def startup():
     await database.connect()
     print("Database connected!")
+    
+    # app 디렉토리 내에 uploads 디렉토리가 존재하는지 확인
+    if not os.path.exists("app/uploads"):
+        os.makedirs("app/uploads")
 
 @app.on_event("shutdown")
 async def shutdown():

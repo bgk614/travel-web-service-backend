@@ -1,6 +1,10 @@
 from pydantic import BaseModel, EmailStr, model_validator
 from typing import Optional
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 class CheckUserIdRequest(BaseModel):
     userid: str
 

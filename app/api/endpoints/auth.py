@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select, insert, update
 from app.models.users import users
 from app.database import database, get_db
 from app.schemas.users import UserCreate, UserResponse
 from app.schemas.auth import *
+from app.utils.jwt import verify_access_token
 from passlib.context import CryptContext
 import random
 import string
@@ -12,6 +13,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import json
+from app.utils.jwt import create_access_token, verify_access_token
+from datetime import timedelta
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError
 
 router = APIRouter()
 
@@ -23,6 +28,7 @@ def load_secrets():
     return secrets
 
 secrets = load_secrets()
+SECRET_KEY = secrets['SECRET_KEY']
 
 # 비밀번호 해싱
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -55,6 +61,49 @@ def authenticate_user(db: Session, userid: str, password: str):
         return None
     return user
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = verify_access_token(token, SECRET_KEY)
+        if payload is None:
+            raise credentials_exception
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user_query = select(users).where(users.c.userid == user_id)
+    result = db.execute(user_query).first()
+    if result is None:
+        raise credentials_exception
+    user = dict(result._mapping)
+    return user["userid"]
+
+
+# 로그인 엔드포인트
+@router.post("/login/", response_model=Token)
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    user = authenticate_user(db, request.userid, request.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": user["userid"]}, secret_key=SECRET_KEY, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+# 현재 사용자 정보 조회 엔드포인트
+@router.get("/users/me/", response_model=UserResponse)
+def read_users_me(current_user: UserResponse = Depends(get_current_user)):
+    return current_user
 
 # 아이디 중복 확인 엔드포인트
 @router.post("/check-userid/")
@@ -104,24 +153,6 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         return {**user.dict(), "id": last_record_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-# 로그인 엔드포인트
-@router.post("/login/", response_model=UserResponse)
-def login(request: LoginRequest, db: Session = Depends(get_db)):
-    user = authenticate_user(db, request.userid, request.password)
-    if not user:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    
-    # Pydantic 모델로 변환하여 반환
-    return UserResponse(
-        id=user["id"],
-        userid=user["userid"],
-        nickname=user["nickname"],
-        name=user["name"],
-        phone=user["phone"],
-        email=user["email"],
-        address=user["address"]
-    )
 
 # 인증번호 요청 엔드포인트
 @router.post("/send-code/")
