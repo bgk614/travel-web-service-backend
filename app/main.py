@@ -8,6 +8,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",  # React 앱이 실행되는 주소
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,6 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(board.router, prefix="/board", tags=["board"])
 app.include_router(chat.router, prefix="/chat", tags=["chat"])

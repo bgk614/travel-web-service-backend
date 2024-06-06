@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class PlaceBase(BaseModel):
     title: str
@@ -7,8 +8,9 @@ class PlaceBase(BaseModel):
     firstimage: str
     tel: str
     contentId: int
-    hmpg: str
-    overview: str
+    hmpg: Optional[str]
+    overview: Optional[str]
+    sigunguCode: Optional[int]
 
 class PlaceCreate(PlaceBase):
     pass

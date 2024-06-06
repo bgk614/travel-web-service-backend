@@ -1,7 +1,7 @@
 # from sqlalchemy import Column, Integer, String
 # from app.database import Base
 
-# class Place(Base):
+# class place(Base):
 #     __tablename__ = "places"
 
 #     id = Column(Integer, primary_key=True, index=True)
@@ -29,6 +29,5 @@ place = Table(
     Column("contentId", Integer, unique=True, nullable=False),
     Column("hmpg", String(255), nullable=True),
     Column("overview", Text, nullable=True),
-    Column("created_at", TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=True),
-    Column("updated_at", TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=True, onupdate=text('CURRENT_TIMESTAMP'))
+    Column("sigunguCode", Integer, nullable=True),
 )
