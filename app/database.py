@@ -25,10 +25,3 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 openai_api_key = config.get("OPENAI_API_KEY")
 if not openai_api_key:
     raise ValueError("OpenAI API key not found in the config file")
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
