@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Text
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Text, JSON
 
 metadata = MetaData()
 
@@ -12,5 +12,5 @@ plans = Table(
     Column('userid', String(100), ForeignKey('users.userid'), nullable=False),
     Column('likes', Integer, default=0),
     Column('images', Text, nullable=True),
-    Column('itinerary', Text, nullable=True)
+    Column('itinerary', JSON, nullable=True)  # JSON 형식으로 저장
 )

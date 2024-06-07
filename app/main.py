@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from app.api.endpoints import board, chat, users, notice, question, answer, auth, plans
 from app.database import database
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +23,9 @@ app.include_router(question.router, prefix="/question", tags=["question"])
 app.include_router(answer.router, prefix="/answer", tags=["answer"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(plans.router, prefix="/plans", tags=["plans"])
+
+# 정적 파일 서빙 설정
+app.mount("/static", StaticFiles(directory="app/uploads"), name="static")
 
 @app.get("/api/demo-web")
 async def demo_web():
