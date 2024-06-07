@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Form, File, UploadFile, HTTPException, s
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update
 from app.database import get_db
-from app.models.users import users
+from app.models.user import users
 from app.models.plans import plans as plans_model
 from app.schemas import plans as plans_schema
 import shutil
