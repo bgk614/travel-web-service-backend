@@ -2,10 +2,13 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-class Board(BaseModel):
+class NoticeCreate(BaseModel):
+    title: str
+    content: str
+
+class NoticeResponse(BaseModel):
     id: int
     title: str
-    contents: str
-    created_by: str
+    content: str
     created_at: Optional[datetime] = None
-    click_count: int = 0
+    updated_at: Optional[datetime] = None
