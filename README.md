@@ -1,4 +1,4 @@
-### CapstoneDesign Travel Web Frontend
+### CapstoneDesign Travel Web Backend
 ##### ( 2024. 03. 22 ~ 2024. 08. 30 )
 
 
